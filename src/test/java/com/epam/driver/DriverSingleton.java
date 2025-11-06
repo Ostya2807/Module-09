@@ -1,10 +1,12 @@
 package com.epam.driver;
 
+import com.epam.utils.HighlightListener;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.events.EventFiringDecorator;
 
 public class DriverSingleton {
 
@@ -32,6 +34,7 @@ public class DriverSingleton {
                     break;
                 }
             }
+            driver = new EventFiringDecorator(new HighlightListener()).decorate(driver);
             driver.manage().window().maximize();;
         }
         return driver;
