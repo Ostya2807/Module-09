@@ -3,7 +3,7 @@
     <test name="Smoke Tests">
         <classes>
             <class name="com.epam.tests.LoginPageTest"/>
-            <class name="com.epam.tests.InventoryPageTest"/>
+            <class name="com.epam.tests.CheckoutCompletePageTest"/>
         </classes>
     </test>
 </suite>
