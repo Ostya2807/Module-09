@@ -1,5 +1,8 @@
 package com.epam.pages;
 
+import com.epam.driver.DriverSingleton;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
@@ -16,8 +19,11 @@ public abstract class BasePage {
 
     protected WebDriver driver;
 
+    protected final Logger logger = LogManager.getRootLogger();
+
     protected BasePage(WebDriver driver){
-        this.driver = driver;
+        this.driver = DriverSingleton.getDriver();
+        PageFactory.initElements(driver, this);
     }
     protected void waitForElementToBeVisible(WebElement element) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));

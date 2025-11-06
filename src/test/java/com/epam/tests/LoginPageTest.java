@@ -10,6 +10,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.time.Duration;
+
 public class LoginPageTest {
     private WebDriver driver;
     protected LoginPage loginPage;
@@ -18,20 +20,21 @@ public class LoginPageTest {
 
     @BeforeMethod
     public void loadApplication() {
-        this.driver = DriverSingleton.getDriver();
+        driver = DriverSingleton.getDriver();
         driver.get(URL);
         loginPage = new LoginPage(this.driver);
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void tearDown() {
-        this.driver.quit();
+        driver.quit();
+        DriverSingleton.closeDriver();
     }
 
-    @Test(groups = "regression")
+    @Test
     public void validLoginTest() {
         User user = UserCreator.withAllCredentials();
         loginPage.login(user);
-        Assert.assertEquals(driver.getTitle(), "Swag Labs");
+        Assert.assertEquals(driver.getCurrentUrl(), "https://www.saucedemo.com/inventory.html");
     }
 }
