@@ -10,40 +10,41 @@ import org.openqa.selenium.support.events.EventFiringDecorator;
 
 public class DriverSingleton {
 
-    private static WebDriver driver;
+    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
     public DriverSingleton() {
     }
 
     public static WebDriver getDriver() {
-        if (driver == null) {
-            switch (System.getProperty("browser")) {
-                case "chrome": {
-                    WebDriverManager.chromedriver().setup();
-                    driver = new ChromeDriver();
-                    break;
-                }
-                case "edge": {
+        if (driver.get() == null) {
+            WebDriver webDriver;
+
+            switch (System.getProperty("browser", "chrome")) {
+                case "edge":
                     WebDriverManager.edgedriver().setup();
-                    driver = new EdgeDriver();
+                    webDriver = new EdgeDriver();
                     break;
-                }
-                default: {
+                case "firefox":
                     WebDriverManager.firefoxdriver().setup();
-                    driver = new FirefoxDriver();
+                    webDriver = new FirefoxDriver();
                     break;
-                }
+                default:
+                    WebDriverManager.chromedriver().setup();
+                    webDriver = new ChromeDriver();
+                    break;
             }
-            driver = new EventFiringDecorator(new HighlightListener()).decorate(driver);
-            driver.manage().window().maximize();;
+
+            webDriver = new EventFiringDecorator(new HighlightListener()).decorate(webDriver);
+            webDriver.manage().window().maximize();
+            driver.set(webDriver);
         }
-        return driver;
+        return driver.get();
     }
 
-    public static void closeDriver(){
-        if (driver != null) {
-            driver.quit();
-            driver = null;
+    public static void closeDriver() {
+        if (driver.get() != null) {
+            driver.get().quit();
+            driver.remove();
         }
     }
 }
